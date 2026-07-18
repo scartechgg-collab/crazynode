@@ -1,6 +1,0 @@
-1:"$Sreact.fragment"
-2:I[69002,["/_next/static/chunks/05-c3ty_6dwfk.js","/_next/static/chunks/14mrh2-p_w84d.js","/_next/static/chunks/35v5eeg6gp15i.js","/_next/static/chunks/36fswrmvvatq1.js","/_next/static/chunks/0pw3hw4b133fy.js","/_next/static/chunks/2ojy0jqi-oa_2.js"],"default"]
-3:I[97367,["/_next/static/chunks/05-c3ty_6dwfk.js","/_next/static/chunks/14mrh2-p_w84d.js"],"OutletBoundary"]
-4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"game":{"id":"ark","name":"ARK","slug":"ark","description":"Powerful ARK: Survival Evolved hosting with cluster support, mod management, scheduled restarts, and hardware that handles even the largest tribes.","icon":"🦖","startingPrice":249,"features":["Cluster Support","Mod Manager","Scheduled Restarts","Cross-Server Travel","DDoS Protection","Premium CPU"],"specs":{"ram":"8-64 GB","cpu":"Ryzen 9 7950X","storage":"100-1TB NVMe"},"color":"#2196F3"}}],[["$","script","script-0",{"src":"/_next/static/chunks/2ojy0jqi-oa_2.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"-XAVRU0KD3jfhWHhF3ndU"}
-5:null
