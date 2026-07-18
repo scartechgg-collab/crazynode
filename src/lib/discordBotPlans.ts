@@ -1,0 +1,43 @@
+export const DISCORD_BOT_PLANS = [
+  {
+    name: "STARTER",
+    price: 49,
+    ram: "512MB",
+    storage: "5GB NVMe SSD",
+    cpu: "50%",
+    botSize: "Small Discord Bots",
+  },
+  {
+    name: "BASIC",
+    price: 99,
+    ram: "1GB",
+    storage: "10GB NVMe SSD",
+    cpu: "100%",
+    botSize: "Medium Discord Bots",
+  },
+  {
+    name: "PRO",
+    price: 199,
+    ram: "2GB",
+    storage: "20GB NVMe SSD",
+    cpu: "150%",
+    botSize: "Music & Utility Bots",
+    popular: true,
+  },
+  {
+    name: "ADVANCED",
+    price: 299,
+    ram: "4GB",
+    storage: "40GB NVMe SSD",
+    cpu: "200%",
+    botSize: "Large Community Bots",
+  },
+  {
+    name: "ELITE",
+    price: 499,
+    ram: "8GB",
+    storage: "80GB NVMe SSD",
+    cpu: "300%",
+    botSize: "High-Traffic Bots",
+  },
+];
