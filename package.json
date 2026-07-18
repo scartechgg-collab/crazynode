@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-postgresql-template",
+  "name": "crazynode",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
+  "dependencies": {s
     "@types/three": "^0.185.1",
     "clsx": "^2.1.1",
     "dotenv": "17.3.1",
