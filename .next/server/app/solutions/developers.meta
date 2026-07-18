@@ -1,0 +1,17 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/(pages)/layout,_N_T_/(pages)/solutions/layout,_N_T_/(pages)/solutions/developers/layout,_N_T_/(pages)/solutions/developers/page,_N_T_/solutions/developers"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/!KHBhZ2VzKQ/solutions/developers/__PAGE__",
+    "/!KHBhZ2VzKQ/solutions/developers",
+    "/!KHBhZ2VzKQ/solutions",
+    "/!KHBhZ2VzKQ",
+    "/_index",
+    "/_head"
+  ]
+}

@@ -1,0 +1,21 @@
+import type { Metadata } from "next";
+import LegalPage from "@/components/LegalPage";
+
+export const metadata: Metadata = { title: "Refund Policy" };
+
+const sections = [
+  { title: "48-Hour Money-Back Guarantee", content: "CrazyNode offers a 48-hour money-back guarantee on all game server hosting, VPS hosting, and web hosting plans. If you are not satisfied with our services for any reason, you may request a full refund within 48 hours of your initial purchase. This guarantee applies only to first-time purchases of each service type per customer." },
+  { title: "Eligible Refund Requests", content: "Refunds will be issued for: services that fail to work as described and that our technical team cannot resolve within a reasonable timeframe; accidental duplicate purchases; and billing errors where you were charged incorrectly. Refunds are credited back to your original payment method within 5-10 business days or applied as account credit based on your preference." },
+  { title: "Non-Refundable Items", content: "The following are non-refundable: dedicated servers after deployment; domain name registrations and transfers; SSL certificates after issuance; add-on services including dedicated IPs after activation; services suspended or terminated due to Acceptable Use Policy violations; renewal payments made more than 24 hours prior; and any service where the 48-hour guarantee period has expired." },
+  { title: "How to Request a Refund", content: "To request a refund, submit a support ticket through the client area or email root@crazynode.in with your account email, service ID, invoice number, and reason for the refund request. Our billing team will review your request and respond within 24 hours. Approved refunds are processed within 3-5 business days." },
+  { title: "Refund Processing Times", content: "Account credit refunds are applied instantly upon approval. Refunds to original payment methods are processed within 5-10 business days depending on your bank or payment provider. UPI refunds typically complete within 2-3 business days, while international card refunds may take up to 14 days to appear on your statement." },
+  { title: "Chargebacks and Disputes", content: "We encourage customers to contact us directly before filing chargebacks with their bank or payment provider. Initiating a chargeback without first contacting support may result in immediate suspension of all services on your account. Fraudulent chargebacks will be contested and may result in permanent account termination and blacklisting." },
+  { title: "Service Credits", content: "In addition to refunds, customers may be eligible for service credits under our Service Level Agreement. If we fail to meet our 99.99% uptime guarantee in any calendar month, you may request credits proportional to the downtime: 99.0-99.99% uptime earns 10% credit, 95.0-98.99% earns 25% credit, and below 95% earns 50% credit of the monthly fee." },
+  { title: "Cancellation Policy", content: "You may cancel services at any time through the client area. Cancellations take effect at the end of the current billing period, and no partial refunds are provided for unused time except as covered by our 48-hour guarantee. Data associated with canceled services is retained for 30 days and then permanently deleted." },
+  { title: "Promotional and Discounted Services", content: "Services purchased at promotional pricing or with discount codes are eligible for refunds under the 48-hour guarantee, but refunds will be limited to the amount actually paid, not the full retail price. Free trials converted to paid plans are eligible for the guarantee starting from the first payment date." },
+  { title: "Contact for Billing Disputes", content: "Our billing team is available 24/7 to resolve any payment or refund concerns. Contact us at root@crazynode.in or open a billing ticket in the client area. We are committed to fair resolution of all billing disputes and will always work with you to find a satisfactory solution." },
+];
+
+export default function RefundPage() {
+  return <LegalPage badge="💰 Legal" title="Refund" highlight="Policy" description="Our fair and transparent refund policy for all hosting services." sections={sections} />;
+}
