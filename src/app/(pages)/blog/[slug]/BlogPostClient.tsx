@@ -18,7 +18,7 @@ export default function BlogPostClient({ post }: { post: Post }) {
     <>
       <section className="relative pt-32 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-dark-bg" />
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,45,85,0.06) 1px, transparent 0)", backgroundSize: "50px 50px" }} />
+        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(227,23,78,0.06) 1px, transparent 0)", backgroundSize: "50px 50px" }} />
 
         <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -84,7 +84,7 @@ export default function BlogPostClient({ post }: { post: Post }) {
               <Link href="/blog" className="inline-flex items-center gap-2 text-sm text-brand font-medium hover:gap-3 transition-all">
                 <ArrowLeft className="w-4 h-4" /> More Articles
               </Link>
-              <Link href="/register" className="px-5 py-2.5 bg-brand text-white text-sm font-semibold rounded-xl hover:bg-brand-dark transition-all">
+              <Link href="https://client.crazynode.in" target="_blank" rel="noopener noreferrer" className="px-5 py-2.5 bg-brand text-white text-sm font-semibold rounded-xl hover:bg-brand-dark transition-all">
                 Start Hosting
               </Link>
             </div>

@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Cpu, MapPin, Brain, HardDrive, Zap, ChevronRight, Server } from "lucide-react";
-import { LOCATIONS, MINECRAFT_PROCESSORS, type Processor, type PlanTier } from "@/lib/plans";
+import { Cpu, MapPin, Brain, HardDrive, Zap, ChevronRight, Server, ShoppingCart } from "lucide-react";
+import { LOCATIONS, MINECRAFT_PROCESSORS as DEFAULT_PROCESSORS, type Processor, type PlanTier } from "@/lib/plans";
+import { minecraftProductUrl } from "@/lib/productUrls";
+import { useCart } from "./CartContext";
+import { useCurrency } from "./CurrencyContext";
 
 type Category = "AMD" | "INTEL";
 const CATEGORIES: Category[] = ["AMD", "INTEL"];
@@ -33,13 +36,32 @@ function AnimatedValue({ value }: { value: string }) {
   );
 }
 
-function PlanCard({ tier, location, isPopular }: { tier: PlanTier; location: string; isPopular?: boolean }) {
+function PlanCard({ tier, location, processorId, isPopular }: { tier: PlanTier; location: string; processorId: string; isPopular?: boolean }) {
+  const { addToCart, lastAdded } = useCart();
+  const { convert, symbol } = useCurrency();
+  const id = `${processorId}-${tier.name}-${location}`;
+  const isLastAdded = lastAdded === id;
+  const priceConverted = convert(tier.price);
+
+  const handleAddToCart = () => {
+    addToCart({
+      id,
+      name: `${tier.name} - ${processorId}`,
+      processor: processorId,
+      price: tier.price,
+      ram: tier.ram,
+      storage: tier.storage,
+      cpu: tier.cpu,
+      url: minecraftProductUrl(processorId, tier.name),
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className={`relative premium-card p-5 sm:p-6 flex flex-col ${isPopular ? "border-brand/40 ring-1 ring-brand/20" : ""}`}
+      className={`relative premium-card p-5 sm:p-6 flex flex-col ${isPopular ? "border-brand/40 ring-1 ring-brand/20" : ""} ${isLastAdded ? "ring-2 ring-emerald-400/50 border-emerald-400/30" : ""}`}
     >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-brand text-white text-[10px] font-bold shadow-lg shadow-brand/25">
@@ -49,7 +71,9 @@ function PlanCard({ tier, location, isPopular }: { tier: PlanTier; location: str
 
       <div className="text-center mb-5 pb-5 border-b border-white/[.07]">
         <p className="text-[10px] font-bold tracking-[.18em] text-gray-500 uppercase">{tier.name}</p>
-        <p className="mt-2 text-3xl font-extrabold text-price">₹{tier.price.toLocaleString("en-IN")}<span className="text-sm text-gray-500 font-normal">/mo</span></p>
+        <p className="mt-2 text-3xl font-extrabold text-price">
+          {symbol}{priceConverted.value}<span className="text-sm text-gray-500 font-normal">/mo</span>
+        </p>
       </div>
 
       <ul className="space-y-3 text-xs text-gray-300 flex-1">
@@ -73,10 +97,24 @@ function PlanCard({ tier, location, isPopular }: { tier: PlanTier; location: str
         ))}
       </ul>
 
-      <Link href="/register" className="mt-6 group flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white bg-brand hover:bg-brand-dark transition-all hover:shadow-lg hover:shadow-brand/25">
-        Order Now
-        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-      </Link>
+      <div className="mt-6 grid grid-cols-[1fr_auto] gap-2">
+        <button
+          onClick={handleAddToCart}
+          className={`group flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all ${isLastAdded ? "bg-emerald-500 text-white" : "bg-white/[0.06] border border-white/[0.08] text-white hover:bg-white/[0.1] hover:border-brand/30"}`}
+        >
+          <ShoppingCart className={`w-4 h-4 ${isLastAdded ? "animate-bounce" : "group-hover:scale-110 transition-transform"}`} />
+          {isLastAdded ? "Added!" : "Cart"}
+        </button>
+        <Link
+          href={minecraftProductUrl(processorId, tier.name)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex items-center justify-center gap-2 rounded-xl py-3 px-4 text-sm font-semibold text-white bg-brand hover:bg-brand-dark transition-all hover:shadow-lg hover:shadow-brand/25"
+        >
+          Order
+          <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        </Link>
+      </div>
     </motion.div>
   );
 }
@@ -85,9 +123,19 @@ export default function PlanSelector({ gameName = "Minecraft", isFirstSection = 
   const [category, setCategory] = useState<Category>("AMD");
   const [processorId, setProcessorId] = useState<string | null>(null);
   const [locationId, setLocationId] = useState<string>(LOCATIONS[0].id);
+  const [allProcessors, setAllProcessors] = useState<Processor[]>(DEFAULT_PROCESSORS);
 
-  const processors = useMemo(() => MINECRAFT_PROCESSORS.filter((p) => p.category === category), [category]);
-  const selected = useMemo<Processor | null>(() => MINECRAFT_PROCESSORS.find((p) => p.id === processorId) || null, [processorId]);
+  useEffect(() => {
+    fetch("/api/content/minecraft_processors")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.value && Array.isArray(d.value) && d.value.length > 0) setAllProcessors(d.value);
+      })
+      .catch(() => {});
+  }, []);
+
+  const processors = useMemo(() => allProcessors.filter((p: Processor) => p.category === category), [category, allProcessors]);
+  const selected = useMemo<Processor | null>(() => allProcessors.find((p: Processor) => p.id === processorId) || null, [processorId, allProcessors]);
   const location = useMemo(() => LOCATIONS.find((l) => l.id === locationId) || LOCATIONS[0], [locationId]);
 
   return (
@@ -96,8 +144,8 @@ export default function PlanSelector({ gameName = "Minecraft", isFirstSection = 
       <div className="absolute inset-x-0 top-0 h-px bg-white/[.06]" />
       {isFirstSection && (
         <>
-          <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,59,102,0.06) 1px, transparent 0)", backgroundSize: "50px 50px" }} />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]" style={{ background: "radial-gradient(ellipse, rgba(255,59,102,0.1) 0%, transparent 70%)" }} />
+          <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(227,23,78,0.06) 1px, transparent 0)", backgroundSize: "50px 50px" }} />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]" style={{ background: "radial-gradient(ellipse, rgba(227,23,78,0.1) 0%, transparent 70%)" }} />
         </>
       )}
 
@@ -222,7 +270,13 @@ export default function PlanSelector({ gameName = "Minecraft", isFirstSection = 
                 </div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                   {selected.tiers.map((tier) => (
-                    <PlanCard key={tier.name} tier={tier} location={location.label} isPopular={tier.name === "PRO"} />
+                    <PlanCard
+                      key={tier.name}
+                      tier={tier}
+                      location={location.label}
+                      processorId={selected.id}
+                      isPopular={tier.name === "PRO"}
+                    />
                   ))}
                 </div>
               </motion.div>

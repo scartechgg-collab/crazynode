@@ -55,7 +55,7 @@ export default function Stats() {
   return (
     <section ref={ref} className="relative py-20 overflow-hidden">
       <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, #0a0a0a 0%, #111111 50%, #0a0a0a 100%)" }} />
-      <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,45,85,0.05) 1px, transparent 0)", backgroundSize: "40px 40px" }} />
+      <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(227,23,78,0.05) 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">

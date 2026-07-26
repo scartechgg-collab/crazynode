@@ -47,7 +47,7 @@ export default function SolutionPage({ badge, title, highlight, description, fea
                   </div>
                 ))}
               </div>
-              <Link href="/register" className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-all hover:shadow-lg hover:shadow-brand/25 group">
+              <Link href="https://client.crazynode.in" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-all hover:shadow-lg hover:shadow-brand/25 group">
                 Get Started <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>

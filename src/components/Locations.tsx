@@ -1,11 +1,20 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { Radio, Route, ShieldCheck, Zap, Sparkles, MapPin } from "lucide-react";
 import { LOCATIONS } from "@/lib/constants";
-import RealEarthGlobe from "./RealEarthGlobe";
 import { calculateDistanceKm, estimateLatency } from "@/lib/latency";
+
+const RealEarthGlobe = dynamic(() => import("./RealEarthGlobe"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-[420px] h-[420px] flex items-center justify-center">
+      <div className="w-10 h-10 rounded-full border-2 border-brand border-t-transparent animate-spin" />
+    </div>
+  ),
+});
 
 export default function Locations() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number; city?: string } | null>(null);

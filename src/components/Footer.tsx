@@ -38,8 +38,8 @@ const hostingLinks = [
 
 const cloudLinks = [
   { label: "VPS Hosting", href: "/vps" },
-  { label: "DDoS Protection", href: "/#infrastructure" },
-  { label: "Domain Registration", href: "/web-hosting" },
+  { label: "DDoS Protection", href: "/ddos" },
+  { label: "Free Hosting", href: "/free" },
   { label: "Web Hosting", href: "/web-hosting" },
 ];
 
@@ -113,7 +113,7 @@ export default function Footer() {
 
   return (
     <footer className="relative overflow-hidden border-t border-white/[.07] bg-[#070709]">
-      <div className="absolute inset-0 opacity-[.04]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,59,102,0.6) 1px, transparent 0)", backgroundSize: "42px 42px" }} />
+      <div className="absolute inset-0 opacity-[.04]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(227,23,78,0.6) 1px, transparent 0)", backgroundSize: "42px 42px" }} />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-brand/55 to-transparent" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
@@ -181,11 +181,14 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-8 pt-6 border-t border-white/[.065] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-500">© 2026 NyxorCloud. All Rights Reserved.</p>
+          <p className="text-xs text-gray-500">© 2026 CrazyNode. All Rights Reserved.</p>
           <p className="text-xs text-gray-500">Powered by modern cloud infrastructure.</p>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-2 rounded-full bg-emerald-500/[.06] border border-emerald-500/15 px-3 py-1.5 text-[10px] font-medium text-emerald-400"><Activity className="w-3 h-3" />99.99% Uptime</span>
             <span className="rounded-full bg-brand/[.06] border border-brand/15 px-3 py-1.5 text-[10px] font-medium text-brand">v2.0 · Enterprise</span>
+            <Link href="/admin/login" className="ml-2 w-7 h-7 rounded-lg bg-white/[0.04] border border-white/10 flex items-center justify-center text-gray-600 hover:text-white hover:border-brand/30 transition-all" title="Admin Access">
+              <ShieldCheck className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
       </div>
@@ -206,6 +209,17 @@ export default function Footer() {
           </motion.button>
         )}
       </AnimatePresence>
+
+      {/* Fixed Admin button in footer corner - always visible */}
+      <Link
+        href="/admin/login"
+        className="fixed bottom-5 right-5 z-50 w-12 h-12 rounded-2xl bg-[#121214] backdrop-blur border border-white/10 flex items-center justify-center text-gray-500 hover:text-white hover:border-[#e3174e]/50 hover:bg-[#e3174e]/15 transition-all shadow-xl shadow-black/30 group"
+        title="Admin Panel - CrazyNode Control Center"
+        aria-label="Admin Panel"
+      >
+        <ShieldCheck className="w-5 h-5 group-hover:scale-110 transition-transform" />
+        <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#e3174e] rounded-full animate-pulse border-2 border-[#121214]" />
+      </Link>
     </footer>
   );
 }

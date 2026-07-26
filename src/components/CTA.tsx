@@ -8,7 +8,7 @@ export default function CTA() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-dark-bg" />
-      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(255,45,85,0.08) 0%, transparent 70%)" }} />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(227,23,78,0.08) 0%, transparent 70%)" }} />
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
@@ -23,7 +23,7 @@ export default function CTA() {
             Join thousands of gamers who trust CrazyNode for premium game server hosting. Start in under 60 seconds.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/register" className="group px-8 py-4 bg-brand text-white font-semibold rounded-xl text-lg hover:bg-brand-dark transition-all hover:shadow-xl hover:shadow-brand/25 flex items-center gap-2">
+            <Link href="https://client.crazynode.in" target="_blank" rel="noopener noreferrer" className="group px-8 py-4 bg-brand text-white font-semibold rounded-xl text-lg hover:bg-brand-dark transition-all hover:shadow-xl hover:shadow-brand/25 flex items-center gap-2">
               Get Started Now
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Link>

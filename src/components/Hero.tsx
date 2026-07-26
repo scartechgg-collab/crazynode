@@ -10,32 +10,37 @@ type GameHero = {
   slug: string;
   startingPrice: number;
   description: string;
+  banner: string;
 };
 
-const heroGames: GameHero[] = [
+const defaultHeroGames: GameHero[] = [
   {
     name: "Minecraft Server Hosting",
     slug: "minecraft",
     startingPrice: 180,
     description: "Build, survive, and thrive in limitless worlds. Experience smooth, high-performance Minecraft hosting with instant setup, powerful hardware, and low-latency connections for every adventure.",
+    banner: "https://wallpapers.com/images/hd/hd-minecraft-logo-3nehf0ctjgk3d0zp.jpg",
   },
   {
     name: "GTA V Server Hosting",
     slug: "gtav",
     startingPrice: 599,
     description: "Take your Grand Theft Auto V experience to the next level with reliable hosting designed for custom multiplayer communities, roleplay servers, and large-scale online gameplay.",
+    banner: "https://wallpaperaccess.com/full/2800478.jpg",
   },
   {
     name: "Hytale Server Hosting",
     slug: "hytale",
     startingPrice: 199,
     description: "Prepare for the next generation of sandbox adventures with powerful Hytale-ready hosting. Built for creativity, exploration, and community-driven gameplay from day one.",
+    banner: "https://i.pinimg.com/originals/af/af/33/afaf3364291788889b172367cc557e60.jpg",
   },
   {
     name: "FiveM Server Hosting",
     slug: "fivem",
     startingPrice: 299,
     description: "Launch and manage immersive GTA V roleplay servers with optimized FiveM hosting. Enjoy high performance, fast deployment, and stable connectivity.",
+    banner: "https://wallpapers.com/images/high/fivem-43n2ssnbccc3aes1.jpg",
   },
 ];
 
@@ -49,24 +54,34 @@ const heroCards = [
 ];
 
 export default function Hero() {
+  const [heroGames, setHeroGames] = useState<GameHero[]>(defaultHeroGames);
   const [index, setIndex] = useState(0);
-  const game = heroGames[index];
+  const game = heroGames[index] || defaultHeroGames[0];
+
+  useEffect(() => {
+    fetch("/api/content/hero_games")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.value && Array.isArray(d.value) && d.value.length > 0) setHeroGames(d.value);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
       setIndex((current) => (current + 1) % heroGames.length);
     }, 3400);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [heroGames.length]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       <div className="absolute inset-0 bg-dark-bg">
-        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,59,102,0.08) 1px, transparent 0)", backgroundSize: "50px 50px" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full" style={{ background: "radial-gradient(circle, rgba(255,59,102,0.08) 0%, transparent 70%)" }} />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]" style={{ background: "radial-gradient(ellipse, rgba(255,59,102,0.12) 0%, transparent 70%)" }} />
-        <motion.div animate={{ y: [0, -30, 0], x: [0, 15, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full opacity-30" style={{ background: "radial-gradient(circle, rgba(255,59,102,0.15) 0%, transparent 70%)" }} />
-        <motion.div animate={{ y: [0, 20, 0], x: [0, -20, 0] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full opacity-20" style={{ background: "radial-gradient(circle, rgba(255,59,102,0.1) 0%, transparent 70%)" }} />
+        <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(227,23,78,0.08) 1px, transparent 0)", backgroundSize: "50px 50px" }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full" style={{ background: "radial-gradient(circle, rgba(227,23,78,0.08) 0%, transparent 70%)" }} />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px]" style={{ background: "radial-gradient(ellipse, rgba(227,23,78,0.12) 0%, transparent 70%)" }} />
+        <motion.div animate={{ y: [0, -30, 0], x: [0, 15, 0] }} transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }} className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full opacity-30" style={{ background: "radial-gradient(circle, rgba(227,23,78,0.15) 0%, transparent 70%)" }} />
+        <motion.div animate={{ y: [0, 20, 0], x: [0, -20, 0] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full opacity-20" style={{ background: "radial-gradient(circle, rgba(227,23,78,0.1) 0%, transparent 70%)" }} />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
@@ -189,17 +204,7 @@ export default function Hero() {
             className="absolute inset-0"
           >
             <img
-              src={
-                game.slug === "minecraft"
-                  ? "https://wallpapers.com/images/hd/hd-minecraft-logo-3nehf0ctjgk3d0zp.jpg"
-                  : game.slug === "gtav"
-                  ? "https://wallpaperaccess.com/full/2800478.jpg"
-                  : game.slug === "hytale"
-                  ? "https://i.pinimg.com/originals/af/af/33/afaf3364291788889b172367cc557e60.jpg"
-                  : game.slug === "fivem"
-                  ? "https://wallpapers.com/images/high/fivem-43n2ssnbccc3aes1.jpg"
-                  : undefined
-              }
+              src={game.banner}
               alt=""
               className="w-full h-full object-cover rounded-3xl"
             />

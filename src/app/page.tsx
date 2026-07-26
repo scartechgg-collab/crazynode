@@ -10,28 +10,32 @@ import Pricing from "@/components/Pricing";
 import PriceExchanger from "@/components/PriceExchanger";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
-import FloatingSupport from "@/components/FloatingSupport";
 import PageLoader from "@/components/PageLoader";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
+import { CartProvider } from "@/components/CartContext";
+import { CurrencyProvider } from "@/components/CurrencyContext";
 
 export default function Home() {
   return (
-    <>
-      <PageLoader />
-      <Navbar />
-      <main>
-        <Hero />
-        <GameSwitcher />
-        <Features />
-        <Stats />
-        <Locations />
-        <ControlPanel />
-        <Testimonials />
-        <PriceExchanger />
-        <Pricing />
-        <CTA />
-      </main>
-      <Footer />
-      <FloatingSupport />
-    </>
+    <CurrencyProvider>
+      <CartProvider>
+        <PageLoader />
+        <AnnouncementBanner />
+        <Navbar />
+        <main>
+          <Hero />
+          <GameSwitcher />
+          <Features />
+          <Stats />
+          <Locations />
+          <ControlPanel />
+          <Testimonials />
+          <PriceExchanger />
+          <Pricing />
+          <CTA />
+        </main>
+        <Footer />
+      </CartProvider>
+    </CurrencyProvider>
   );
 }

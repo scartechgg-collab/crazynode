@@ -11,6 +11,7 @@ export const NAV_ITEMS = [
   {
     label: "Hosting",
     children: [
+      { label: "All Game Servers", href: "/game-server-hosting" },
       {
         label: "Game Hosting",
         children: [

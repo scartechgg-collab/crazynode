@@ -13,7 +13,7 @@ export default function GameSwitcher() {
   return (
     <section className="relative py-24 overflow-hidden">
       <div className="absolute inset-0 bg-dark-bg" />
-      <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(255,45,85,0.04) 1px, transparent 0)", backgroundSize: "60px 60px" }} />
+      <div className="absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, rgba(227,23,78,0.04) 1px, transparent 0)", backgroundSize: "60px 60px" }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
