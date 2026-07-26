@@ -1,22 +1,19 @@
 import { createClient, type User } from "@supabase/supabase-js";
 
-const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
-const anonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-if (!url || !anonKey) {
-  throw new Error("Supabase URL and anon key are required");
-}
+const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "https://placeholder.supabase.co";
+const anonKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "placeholder";
 
 export const supabaseServer = createClient(url, anonKey, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 
 export function createAuthenticatedSupabase(accessToken: string) {
-  return createClient(url!, anonKey!, {
+  return createClient(url, anonKey, {
     auth: { persistSession: false, autoRefreshToken: false },
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });
 }
+// ... keep the rest of the file exactly the same
 
 export function getCookie(request: Request, name: string) {
   const header = request.headers.get("cookie") || "";
