@@ -6,9 +6,17 @@ export async function POST(req: Request) {
     if (!email || !password) return Response.json({ error: "Email and password required" }, { status: 400 });
 
     const { data, error } = await supabaseServer.auth.signInWithPassword({ email, password });
-    if (error || !data.session || !data.user) {
-      return Response.json({ error: error?.message || "Invalid credentials" }, { status: 401 });
-    }
+    if (error) {
+  console.error("Supabase login error:", error);
+  return Response.json(
+    {
+      error: error.message,
+        code: error.code,
+        status: error.status,
+    },
+    { status: 401 }
+  );
+}
 
     const response = Response.json({
       success: true,
