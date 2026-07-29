@@ -56,6 +56,7 @@ export const NAV_ITEMS = [
       { label: "Knowledgebase", href: "/knowledgebase" },
       { label: "Network Status", href: "/status" },
       { label: "Submit Ticket", href: "/contact" },
+      { label: "Applications", href: "/applications" },
     ],
   },
 ];
