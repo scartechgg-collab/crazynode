@@ -66,6 +66,7 @@ const iconMap: Record<string, React.ElementType> = {
   "Network Status": Activity,
   "Submit Ticket": LifeBuoy,
   "Game Hosting": Gamepad2,
+  "Applications": Rocket,
 };
 
 const descMap: Record<string, string> = {
@@ -95,6 +96,7 @@ const descMap: Record<string, string> = {
   "Knowledgebase": "Guides & tutorials",
   "Network Status": "Real-time system status",
   "Submit Ticket": "Get help from support",
+  "Applications": "Join CrazyNode",
 };
 
 interface NavChild {
