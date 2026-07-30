@@ -1,41 +1,39 @@
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db";
-import { applicationSubmissions } from "@/db/schema";
-import { getAdminSession } from "@/lib/auth";
-import { eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
-export const dynamic = "force-dynamic";
+// PATCH: Update submission status
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const body = await req.json();
+    const { status } = body;
 
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const session = await getAdminSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const { error } = await supabase
+      .from("application_submissions")
+      .update({ status })
+      .eq("id", params.id);
 
-  const { id } = await params;
-  const { status } = await req.json();
+    if (error) throw error;
 
-  await db
-    .update(applicationSubmissions)
-    .set({ status })
-    .where(eq(applicationSubmissions.id, parseInt(id)));
-
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Error updating submission:", error);
+    return NextResponse.json({ error: "Failed to update status" }, { status: 500 });
+  }
 }
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const session = await getAdminSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+// DELETE: Remove a submission
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const { error } = await supabase
+      .from("application_submissions")
+      .delete()
+      .eq("id", params.id);
 
-  const { id } = await params;
+    if (error) throw error;
 
-  await db
-    .delete(applicationSubmissions)
-    .where(eq(applicationSubmissions.id, parseInt(id)));
-
-  return NextResponse.json({ ok: true });
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Error deleting submission:", error);
+    return NextResponse.json({ error: "Failed to delete submission" }, { status: 500 });
+  }
 }
