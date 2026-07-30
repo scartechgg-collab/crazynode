@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   ChevronRight, ChevronLeft, Check, User, FileText, ShieldCheck,
-  Send, Loader2, CheckCircle2, AlertCircle, X, Lock,
+  Send, Loader2, CheckCircle2, AlertCircle, Lock,
 } from "lucide-react";
 
 type FieldType = "text" | "textarea" | "select" | "number" | "email" | "url" | "tel" | "date" | "range" | "checkbox" | "radio";
@@ -36,7 +36,7 @@ const skillsList = [
   "Content Creation", "Sales & Marketing", "Python", "Java", "Cybersecurity",
 ];
 
-const inputCls = "w-full bg-black/30 border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm focus:border-[#6c47ff]/50 outline-none transition-colors text-white placeholder:text-gray-600";
+const inputCls = "w-full bg-black/30 border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm focus:border-brand/50 outline-none transition-colors text-white placeholder:text-gray-600";
 
 export default function ApplicationsClient() {
   const [template, setTemplate] = useState<AppTemplate | null>(null);
@@ -46,16 +46,16 @@ export default function ApplicationsClient() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  // Step 1
+  // Step 1 State
   const [userInfo, setUserInfo] = useState({
     fullName: "", age: "", city: "", country: "", discord: "", email: "",
     skills: [] as string[], hoursPerDay: "", about: "", contact: "",
   });
 
-  // Step 2 dynamic
+  // Step 2 State (Dynamic)
   const [roleData, setRoleData] = useState<Record<string, any>>({});
 
-  // Step 3
+  // Step 3 State
   const [agreed, setAgreed] = useState(false);
 
   useEffect(() => {
@@ -120,13 +120,19 @@ export default function ApplicationsClient() {
       setError("You must agree to the terms and conditions.");
       return;
     }
+    if (!template) return;
+    
     setSubmitting(true);
     setError("");
     try {
       const res = await fetch("/api/applications/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...userInfo, roleData }),
+        body: JSON.stringify({ 
+          ...userInfo, 
+          roleData,
+          templateId: template.id 
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Submission failed");
@@ -138,24 +144,20 @@ export default function ApplicationsClient() {
     }
   };
 
-  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-[#070709] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#6c47ff] animate-spin" />
+        <Loader2 className="w-8 h-8 text-brand animate-spin" />
       </div>
     );
   }
 
-  // Applications Closed
   if (template && !template.isOpen) {
     return (
       <div className="min-h-screen bg-[#070709] flex items-center justify-center px-4">
-        {/* Background glow */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-red-500/5 blur-[100px]" />
         </div>
-
         <motion.div
           initial={{ opacity: 0, scale: 0.92, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -176,18 +178,10 @@ export default function ApplicationsClient() {
               {template.closedMessage || "There are no applications open at CrazyNode right now. Check back later!"}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/"
-                className="px-6 py-2.5 bg-[#6c47ff] hover:bg-[#5535d4] rounded-xl text-sm font-semibold transition-colors"
-              >
+              <Link href="/" className="px-6 py-2.5 bg-brand hover:bg-brand-dark rounded-xl text-sm font-semibold transition-colors">
                 Back to Home
               </Link>
-              <a
-                href="https://discord.gg/crazynode"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-2.5 border border-white/10 hover:bg-white/[0.04] rounded-xl text-sm font-medium text-gray-400 transition-colors"
-              >
+              <a href="https://discord.gg/crazynode" target="_blank" rel="noopener noreferrer" className="px-6 py-2.5 border border-white/10 hover:bg-white/[0.04] rounded-xl text-sm font-medium text-gray-400 transition-colors">
                 Join Discord
               </a>
             </div>
@@ -197,7 +191,6 @@ export default function ApplicationsClient() {
     );
   }
 
-  // Submitted state
   if (submitted) {
     return (
       <div className="min-h-screen bg-[#070709] flex items-center justify-center px-4">
@@ -219,7 +212,7 @@ export default function ApplicationsClient() {
           <p className="text-gray-400 text-sm mb-8 leading-relaxed">
             Thank you for applying to CrazyNode! Our team will review your application and reach out via Discord if you are shortlisted.
           </p>
-          <Link href="/" className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#6c47ff] rounded-xl text-sm font-semibold hover:bg-[#5535d4] transition-colors">
+          <Link href="/" className="inline-flex items-center gap-2 px-6 py-2.5 bg-brand rounded-xl text-sm font-semibold hover:bg-brand-dark transition-colors">
             Back to Home
           </Link>
         </motion.div>
@@ -236,37 +229,24 @@ export default function ApplicationsClient() {
 
   return (
     <div className="min-h-screen bg-[#070709] text-white flex flex-col">
-      {/* Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-[#6c47ff]/4 blur-[120px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-brand/4 blur-[120px]" />
       </div>
 
-      {/* Content - centered vertically and horizontally */}
       <div className="flex-1 flex items-center justify-center py-16 px-4 relative z-10">
         <div className="w-full max-w-5xl">
-          {/* Title */}
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
-          >
+          <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-1">{template?.title || "Staff Application"}</h1>
             <p className="text-sm text-gray-500">Join the CrazyNode team — complete all steps below</p>
           </motion.div>
 
-          {/* Progress Bar */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="mb-8"
-          >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="mb-8">
             <div className="flex items-center justify-center gap-2">
               {steps.map((s, i) => (
                 <div key={s.id} className="flex items-center gap-2">
                   <div className={`flex items-center gap-2 px-4 py-2 rounded-full border text-xs font-semibold transition-all ${
                     step > s.id ? "bg-green-500/10 border-green-500/30 text-green-400"
-                      : step === s.id ? "bg-[#6c47ff]/10 border-[#6c47ff]/30 text-[#6c47ff]"
+                      : step === s.id ? "bg-brand/10 border-brand/30 text-brand"
                       : "bg-white/[0.02] border-white/[0.06] text-gray-600"
                   }`}>
                     {step > s.id ? <Check className="w-3 h-3" /> : <s.icon className="w-3 h-3" />}
@@ -278,18 +258,10 @@ export default function ApplicationsClient() {
             </div>
           </motion.div>
 
-          {/* Form Card */}
           <div className="premium-card p-6 md:p-8">
             <AnimatePresence mode="wait">
-              {/* STEP 1 */}
               {step === 1 && (
-                <motion.div
-                  key="step1"
-                  initial={{ opacity: 0, x: 24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
-                  transition={{ duration: 0.25 }}
-                >
+                <motion.div key="step1" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }}>
                   <h3 className="text-lg font-bold mb-5">Personal Information</h3>
                   <div className="grid md:grid-cols-2 gap-4 mb-4">
                     {[
@@ -297,18 +269,12 @@ export default function ApplicationsClient() {
                       { label: "Age (16+ only) *", field: "age", type: "number", placeholder: "e.g. 20" },
                       { label: "City *", field: "city", type: "text", placeholder: "Your city" },
                       { label: "Country *", field: "country", type: "text", placeholder: "Your country" },
-                      { label: "Discord Username *", field: "discord", type: "text", placeholder: "username#0000" },
+                      { label: "Discord Username *", field: "discord", type: "text", placeholder: "username" },
                       { label: "Email Address *", field: "email", type: "email", placeholder: "you@example.com" },
                     ].map(({ label, field, type, placeholder }) => (
                       <div key={field}>
                         <label className="text-xs text-gray-400 mb-1 block">{label}</label>
-                        <input
-                          type={type}
-                          value={(userInfo as any)[field]}
-                          onChange={(e) => setUserInfo({ ...userInfo, [field]: e.target.value })}
-                          className={inputCls}
-                          placeholder={placeholder}
-                        />
+                        <input type={type} value={(userInfo as any)[field]} onChange={(e) => setUserInfo({ ...userInfo, [field]: e.target.value })} className={inputCls} placeholder={placeholder} />
                       </div>
                     ))}
                   </div>
@@ -317,16 +283,7 @@ export default function ApplicationsClient() {
                     <label className="text-xs text-gray-400 mb-2 block">Technical Skills <span className="text-gray-600">(Select all that apply) *</span></label>
                     <div className="flex flex-wrap gap-2">
                       {skillsList.map((skill) => (
-                        <button
-                          key={skill}
-                          type="button"
-                          onClick={() => toggleSkill(skill)}
-                          className={`px-3 py-1.5 rounded-full text-xs border transition-all ${
-                            userInfo.skills.includes(skill)
-                              ? "bg-[#6c47ff]/10 border-[#6c47ff]/40 text-white"
-                              : "bg-white/[0.02] border-white/[0.06] text-gray-400 hover:border-white/20"
-                          }`}
-                        >
+                        <button key={skill} type="button" onClick={() => toggleSkill(skill)} className={`px-3 py-1.5 rounded-full text-xs border transition-all ${userInfo.skills.includes(skill) ? "bg-brand/10 border-brand/40 text-white" : "bg-white/[0.02] border-white/[0.06] text-gray-400 hover:border-white/20"}`}>
                           {skill}
                         </button>
                       ))}
@@ -346,26 +303,13 @@ export default function ApplicationsClient() {
 
                   <div>
                     <label className="text-xs text-gray-400 mb-1 block">Tell Us About Yourself *</label>
-                    <textarea
-                      rows={4}
-                      value={userInfo.about}
-                      onChange={(e) => setUserInfo({ ...userInfo, about: e.target.value })}
-                      className={inputCls + " resize-none"}
-                      placeholder="Brief introduction — your background, experience, and why you want to join..."
-                    />
+                    <textarea rows={4} value={userInfo.about} onChange={(e) => setUserInfo({ ...userInfo, about: e.target.value })} className={inputCls + " resize-none"} placeholder="Brief introduction — your background, experience, and why you want to join..." />
                   </div>
                 </motion.div>
               )}
 
-              {/* STEP 2 */}
               {step === 2 && (
-                <motion.div
-                  key="step2"
-                  initial={{ opacity: 0, x: 24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
-                  transition={{ duration: 0.25 }}
-                >
+                <motion.div key="step2" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }}>
                   <h3 className="text-lg font-bold mb-5">Role Specifics</h3>
                   {(!template?.fields || template.fields.length === 0) ? (
                     <div className="text-center py-12 text-gray-500">
@@ -382,17 +326,9 @@ export default function ApplicationsClient() {
                 </motion.div>
               )}
 
-              {/* STEP 3 */}
               {step === 3 && (
-                <motion.div
-                  key="step3"
-                  initial={{ opacity: 0, x: 24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -24 }}
-                  transition={{ duration: 0.25 }}
-                >
+                <motion.div key="step3" initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -24 }} transition={{ duration: 0.25 }}>
                   <h3 className="text-lg font-bold mb-5">Terms & Conditions</h3>
-
                   <div className="bg-black/20 border border-white/[0.06] rounded-xl p-5 max-h-64 overflow-y-auto text-sm text-gray-400 space-y-3 mb-5">
                     {[
                       "By submitting this application, you confirm that all provided information is true and accurate.",
@@ -403,12 +339,11 @@ export default function ApplicationsClient() {
                       "This role may be unpaid/volunteer unless otherwise stated and agreed upon in a separate agreement.",
                       "You grant CrazyNode the right to contact you via your provided Discord/email regarding your application.",
                     ].map((t, i) => (
-                      <p key={i} className="flex gap-2"><span className="text-[#6c47ff] shrink-0">{i + 1}.</span>{t}</p>
+                      <p key={i} className="flex gap-2"><span className="text-brand shrink-0">{i + 1}.</span>{t}</p>
                     ))}
                   </div>
-
                   <label className="flex items-start gap-3 cursor-pointer group">
-                    <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-all ${agreed ? "bg-[#6c47ff] border-[#6c47ff]" : "border-white/20 group-hover:border-white/40"}`}>
+                    <div className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition-all ${agreed ? "bg-brand border-brand" : "border-white/20 group-hover:border-white/40"}`}>
                       {agreed && <Check className="w-3 h-3 text-white" />}
                     </div>
                     <input type="checkbox" className="sr-only" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
@@ -418,27 +353,17 @@ export default function ApplicationsClient() {
               )}
             </AnimatePresence>
 
-            {/* Error */}
             <AnimatePresence>
               {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  className="mt-4 flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3"
-                >
+                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-4 flex items-center gap-2 text-red-400 text-sm bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
                   <AlertCircle className="w-4 h-4 shrink-0" /> {error}
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* Navigation */}
             <div className="flex items-center justify-between mt-8 pt-5 border-t border-white/[0.06]">
               {step > 1 ? (
-                <button
-                  onClick={handleBack}
-                  className="px-5 py-2.5 text-sm text-gray-400 hover:text-white border border-white/10 rounded-xl flex items-center gap-2 hover:bg-white/[0.04] transition-all"
-                >
+                <button onClick={handleBack} className="px-5 py-2.5 text-sm text-gray-400 hover:text-white border border-white/10 rounded-xl flex items-center gap-2 hover:bg-white/[0.04] transition-all">
                   <ChevronLeft className="w-4 h-4" /> Back
                 </button>
               ) : <div />}
@@ -446,18 +371,11 @@ export default function ApplicationsClient() {
               <div className="flex items-center gap-2">
                 <span className="text-xs text-gray-600">Step {step} of {totalSteps}</span>
                 {step < totalSteps ? (
-                  <button
-                    onClick={handleNext}
-                    className="px-6 py-2.5 bg-[#6c47ff] hover:bg-[#5535d4] rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors"
-                  >
+                  <button onClick={handleNext} className="px-6 py-2.5 bg-brand hover:bg-brand-dark rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors">
                     Continue <ChevronRight className="w-4 h-4" />
                   </button>
                 ) : (
-                  <button
-                    onClick={handleSubmit}
-                    disabled={submitting}
-                    className="px-6 py-2.5 bg-green-500 hover:bg-green-600 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50"
-                  >
+                  <button onClick={handleSubmit} disabled={submitting} className="px-6 py-2.5 bg-green-500 hover:bg-green-600 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors disabled:opacity-50">
                     {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Application</>}
                   </button>
                 )}
@@ -470,9 +388,8 @@ export default function ApplicationsClient() {
   );
 }
 
-// ─── Dynamic Field Renderer ───────────────────────────────────────────────
 function DynamicField({ field, value, onChange }: { field: AppField; value: any; onChange: (v: any) => void }) {
-  const cls = "w-full bg-black/30 border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm focus:border-[#6c47ff]/50 outline-none transition-colors text-white placeholder:text-gray-600";
+  const cls = "w-full bg-black/30 border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm focus:border-brand/50 outline-none transition-colors text-white placeholder:text-gray-600";
 
   return (
     <div>
@@ -503,11 +420,9 @@ function DynamicField({ field, value, onChange }: { field: AppField; value: any;
       {field.type === "radio" && (
         <div className="flex flex-wrap gap-3 mt-1">
           {(field.options || []).map((opt) => (
-            <label key={opt} className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm cursor-pointer transition-all ${
-              value === opt ? "bg-[#6c47ff]/10 border-[#6c47ff]/40 text-white" : "bg-white/[0.02] border-white/[0.06] text-gray-400 hover:border-white/20"
-            }`}>
-              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${value === opt ? "border-[#6c47ff]" : "border-gray-600"}`}>
-                {value === opt && <div className="w-2 h-2 rounded-full bg-[#6c47ff]" />}
+            <label key={opt} className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-sm cursor-pointer transition-all ${value === opt ? "bg-brand/10 border-brand/40 text-white" : "bg-white/[0.02] border-white/[0.06] text-gray-400 hover:border-white/20"}`}>
+              <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${value === opt ? "border-brand" : "border-gray-600"}`}>
+                {value === opt && <div className="w-2 h-2 rounded-full bg-brand" />}
               </div>
               <input type="radio" className="sr-only" checked={value === opt} onChange={() => onChange(opt)} />
               {opt}
@@ -518,7 +433,7 @@ function DynamicField({ field, value, onChange }: { field: AppField; value: any;
 
       {field.type === "checkbox" && (
         <label className="flex items-center gap-3 cursor-pointer group mt-1">
-          <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${value ? "bg-[#6c47ff] border-[#6c47ff]" : "border-white/20 group-hover:border-white/40"}`}>
+          <div className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${value ? "bg-brand border-brand" : "border-white/20 group-hover:border-white/40"}`}>
             {value && <Check className="w-3 h-3 text-white" />}
           </div>
           <input type="checkbox" className="sr-only" checked={!!value} onChange={(e) => onChange(e.target.checked)} />
@@ -533,14 +448,7 @@ function DynamicField({ field, value, onChange }: { field: AppField; value: any;
             <span className="text-white font-semibold">{value ?? Math.round(((field.min ?? 0) + (field.max ?? 100)) / 2)}</span>
             <span>{field.max ?? 100}</span>
           </div>
-          <input
-            type="range"
-            min={field.min ?? 0}
-            max={field.max ?? 100}
-            value={value ?? Math.round(((field.min ?? 0) + (field.max ?? 100)) / 2)}
-            onChange={(e) => onChange(Number(e.target.value))}
-            className="w-full accent-[#6c47ff]"
-          />
+          <input type="range" min={field.min ?? 0} max={field.max ?? 100} value={value ?? Math.round(((field.min ?? 0) + (field.max ?? 100)) / 2)} onChange={(e) => onChange(Number(e.target.value))} className="w-full accent-brand" />
         </div>
       )}
     </div>
