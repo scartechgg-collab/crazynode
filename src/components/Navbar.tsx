@@ -33,6 +33,7 @@ import {
   DollarSign,
   LogOut,
   LayoutDashboard,
+  ClipboardList,
 } from "lucide-react";
 import { COMPANY, NAV_ITEMS } from "@/lib/constants";
 import { useCart } from "./CartContext";
@@ -66,7 +67,7 @@ const iconMap: Record<string, React.ElementType> = {
   "Network Status": Activity,
   "Submit Ticket": LifeBuoy,
   "Game Hosting": Gamepad2,
-  "Applications": Rocket,
+  "Applications": ClipboardList,
 };
 
 const descMap: Record<string, string> = {
