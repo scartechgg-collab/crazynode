@@ -19,9 +19,10 @@ import {
   Edit,
   Eye,
   Loader2,
+  ClipboardList, // New Icon for Applications
 } from "lucide-react";
 
-type Tab = "overview" | "hero" | "minecraft" | "vps" | "discord" | "locations" | "announcements" | "branding" | "site";
+type Tab = "overview" | "hero" | "minecraft" | "vps" | "discord" | "locations" | "announcements" | "branding" | "site" | "applications";
 
 export default function AdminDashboardClient() {
   const router = useRouter();
@@ -85,6 +86,7 @@ export default function AdminDashboardClient() {
     { id: "vps", label: "VPS Plans", icon: Server },
     { id: "discord", label: "Discord Bot", icon: Bot },
     { id: "locations", label: "Locations", icon: Globe2 },
+    { id: "applications", label: "Applications", icon: ClipboardList }, // New Tab
     { id: "branding", label: "Branding", icon: Settings },
   ];
 
@@ -144,12 +146,160 @@ export default function AdminDashboardClient() {
           {tab === "vps" && <VpsTab content={content} onSave={saveKey} saving={saving} setContent={setContent} />}
           {tab === "discord" && <DiscordTab content={content} onSave={saveKey} saving={saving} />}
           {tab === "locations" && <LocationsTab content={content} onSave={saveKey} saving={saving} />}
+          {tab === "applications" && <ApplicationsTab content={content} onSave={saveKey} saving={saving} />}
           {tab === "branding" && <BrandingTab content={content} onSave={saveKey} saving={saving} />}
         </main>
       </div>
     </div>
   );
 }
+
+// ... (Keep all your existing tab components: OverviewTab, HeroTab, etc. exactly the same) ...
+// I am omitting them here to save space, but DO NOT delete them from your file. 
+// Just paste the ApplicationsTab below at the end of your file.
+
+function ApplicationsTab({ content, onSave, saving }: any) {
+  const [appTemplate, setAppTemplate] = useState(content.application_template || { title: "Staff Application", fields: [] });
+  const [view, setView] = useState<"builder" | "submissions">("builder");
+
+  useEffect(() => {
+    setAppTemplate(content.application_template || { title: "Staff Application", fields: [] });
+  }, [content.application_template]);
+
+  // Mock submissions for UI demonstration
+  const submissions = [
+    { id: 1, name: "John Doe", discord: "johndoe", role: "Support Agent", date: "2024-05-15", status: "Pending" },
+    { id: 2, name: "Jane Smith", discord: "janesmith", role: "Developer", date: "2024-05-14", status: "Reviewed" }
+  ];
+
+  const addField = () => {
+    setAppTemplate({
+      ...appTemplate,
+      fields: [...appTemplate.fields, { id: `f_${Date.now()}`, label: "New Question", type: "text", required: true, placeholder: "" }]
+    });
+  };
+
+  const updateField = (idx: number, key: string, value: any) => {
+    const fields = [...appTemplate.fields];
+    fields[idx] = { ...fields[idx], [key]: value };
+    setAppTemplate({ ...appTemplate, fields });
+  };
+
+  const removeField = (idx: number) => {
+    setAppTemplate({ ...appTemplate, fields: appTemplate.fields.filter((_: any, i: number) => i !== idx) });
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex gap-4">
+          <button onClick={() => setView("builder")} className={`px-4 py-2 rounded-xl text-sm font-semibold ${view === "builder" ? "bg-brand text-white" : "border border-white/10 text-gray-400"}`}>Form Builder</button>
+          <button onClick={() => setView("submissions")} className={`px-4 py-2 rounded-xl text-sm font-semibold ${view === "submissions" ? "bg-brand text-white" : "border border-white/10 text-gray-400"}`}>Submissions ({submissions.length})</button>
+        </div>
+        
+        {view === "builder" && (
+          <button onClick={() => onSave("application_template", appTemplate)} disabled={saving === "application_template"} className="px-4 py-2 bg-brand rounded-xl text-sm font-semibold flex items-center gap-2">
+            {saving === "application_template" ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} Save Template
+          </button>
+        )}
+      </div>
+
+      {view === "builder" && (
+        <div>
+          <div className="premium-card p-5 mb-6">
+            <label className="text-[11px] text-gray-500 uppercase">Application Title</label>
+            <input value={appTemplate.title} onChange={(e) => setAppTemplate({ ...appTemplate, title: e.target.value })} className="w-full mt-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm" />
+            <p className="text-[10px] text-gray-600 mt-2">Note: Step 1 (User Info) & Step 3 (T&Cs) are standard. Use this builder to create questions for Step 2.</p>
+          </div>
+
+          <div className="space-y-4">
+            {appTemplate.fields.map((field: any, idx: number) => (
+              <div key={field.id} className="premium-card p-4 grid grid-cols-12 gap-3 items-end">
+                <div className="col-span-12 md:col-span-4">
+                  <label className="text-[10px] text-gray-500 uppercase">Question Label</label>
+                  <input value={field.label} onChange={(e) => updateField(idx, "label", e.target.value)} className="w-full mt-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm" />
+                </div>
+                <div className="col-span-6 md:col-span-2">
+                  <label className="text-[10px] text-gray-500 uppercase">Type</label>
+                  <select value={field.type} onChange={(e) => updateField(idx, "type", e.target.value)} className="w-full mt-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm">
+                    <option value="text">Text Input</option>
+                    <option value="textarea">Long Text</option>
+                    <option value="select">Dropdown</option>
+                  </select>
+                </div>
+                <div className="col-span-6 md:col-span-2">
+                  <label className="text-[10px] text-gray-500 uppercase">Required?</label>
+                  <select value={field.required} onChange={(e) => updateField(idx, "required", e.target.value === "true")} className="w-full mt-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+                <div className="col-span-10 md:col-span-3">
+                  <label className="text-[10px] text-gray-500 uppercase">Placeholder (If text/textarea)</label>
+                  <input value={field.placeholder || ""} onChange={(e) => updateField(idx, "placeholder", e.target.value)} className="w-full mt-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm" />
+                </div>
+                <div className="col-span-2 md:col-span-1 flex justify-end">
+                  <button onClick={() => removeField(idx)} className="text-red-400 p-2 hover:bg-red-500/10 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                </div>
+                
+                {field.type === "select" && (
+                  <div className="col-span-12">
+                    <label className="text-[10px] text-gray-500 uppercase">Options (Comma separated)</label>
+                    <input 
+                      value={field.options?.join(", ") || ""} 
+                      onChange={(e) => updateField(idx, "options", e.target.value.split(",").map(s => s.trim()))} 
+                      className="w-full mt-1 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-sm" 
+                      placeholder="Option 1, Option 2, Option 3"
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+            
+            <button onClick={addField} className="flex items-center gap-2 text-sm px-4 py-2 border border-white/10 rounded-xl hover:bg-white/5"><Plus className="w-4 h-4" /> Add Question</button>
+          </div>
+        </div>
+      )}
+
+      {view === "submissions" && (
+        <div className="premium-card overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-white/[0.02] border-b border-white/[0.06]">
+              <tr>
+                <th className="text-left p-4 font-medium text-gray-400">Applicant</th>
+                <th className="text-left p-4 font-medium text-gray-400">Discord</th>
+                <th className="text-left p-4 font-medium text-gray-400">Role</th>
+                <th className="text-left p-4 font-medium text-gray-400">Date</th>
+                <th className="text-left p-4 font-medium text-gray-400">Status</th>
+                <th className="text-right p-4 font-medium text-gray-400">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {submissions.map(sub => (
+                <tr key={sub.id} className="border-b border-white/[0.04] hover:bg-white/[0.02]">
+                  <td className="p-4 text-white">{sub.name}</td>
+                  <td className="p-4 text-gray-400">{sub.discord}</td>
+                  <td className="p-4 text-gray-400">{sub.role}</td>
+                  <td className="p-4 text-gray-400">{sub.date}</td>
+                  <td className="p-4">
+                    <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${sub.status === "Pending" ? "bg-amber-500/10 text-amber-400" : "bg-green-500/10 text-green-400"}`}>
+                      {sub.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-right">
+                    <button className="text-brand hover:text-brand-dark"><Eye className="w-4 h-4 inline" /></button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Make sure to keep all your other existing functions (OverviewTab, HeroTab, etc.) below or above this.
 
 function OverviewTab({ content }: { content: Record<string, any> }) {
   return (
