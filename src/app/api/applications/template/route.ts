@@ -1,52 +1,59 @@
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db";
-import { applicationTemplates } from "@/db/schema";
-import { getAdminSession } from "@/lib/auth";
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
-export const dynamic = "force-dynamic";
-
+// GET: Fetch the live application template
 export async function GET() {
-  let rows = await db.select().from(applicationTemplates).limit(1);
-  if (!rows.length) {
-    // Insert default
-    await db.insert(applicationTemplates).values({
-      title: "Staff Application",
-      fields: [],
-      isOpen: false,
-      closedMessage: "There are no applications open at CrazyNode right now. Check back later!",
+  try {
+    const { data, error } = await supabase
+      .from("application_templates")
+      .select("*")
+      .limit(1)
+      .single();
+
+    if (error) throw error;
+
+    // Return the template mapped to the frontend expectations
+    return NextResponse.json({
+      id: data.id,
+      title: data.title,
+      fields: data.fields,
+      isOpen: data.is_open,
+      closedMessage: data.closed_message,
     });
-    rows = await db.select().from(applicationTemplates).limit(1);
+  } catch (error: any) {
+    console.error("Error fetching template:", error);
+    return NextResponse.json({ error: "Failed to load template" }, { status: 500 });
   }
-  return NextResponse.json(rows[0]);
 }
 
-export async function PUT(req: NextRequest) {
-  const session = await getAdminSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+// PUT: Update the template (Admin only)
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
 
-  const body = await req.json();
-  const { title, fields, isOpen, closedMessage } = body;
+    const { data, error } = await supabase
+      .from("application_templates")
+      .update({
+        title: body.title,
+        fields: body.fields,
+        is_open: body.isOpen,
+        closed_message: body.closedMessage,
+      })
+      .eq("id", body.id)
+      .select("*")
+      .single();
 
-  const rows = await db.select().from(applicationTemplates).limit(1);
-  if (!rows.length) {
-    await db.insert(applicationTemplates).values({
-      title: title ?? "Staff Application",
-      fields: fields ?? [],
-      isOpen: isOpen ?? false,
-      closedMessage: closedMessage ?? "There are no applications open at CrazyNode right now. Check back later!",
+    if (error) throw error;
+
+    return NextResponse.json({
+      id: data.id,
+      title: data.title,
+      fields: data.fields,
+      isOpen: data.is_open,
+      closedMessage: data.closed_message,
     });
-  } else {
-    await db
-      .update(applicationTemplates)
-      .set({
-        ...(title !== undefined && { title }),
-        ...(fields !== undefined && { fields }),
-        ...(isOpen !== undefined && { isOpen }),
-        ...(closedMessage !== undefined && { closedMessage }),
-        updatedAt: new Date(),
-      });
+  } catch (error: any) {
+    console.error("Error saving template:", error);
+    return NextResponse.json({ error: "Failed to save template" }, { status: 500 });
   }
-
-  const updated = await db.select().from(applicationTemplates).limit(1);
-  return NextResponse.json(updated[0]);
 }
