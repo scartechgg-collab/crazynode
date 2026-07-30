@@ -1,45 +1,37 @@
-import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db";
-import { applicationSubmissions, applicationTemplates } from "@/db/schema";
+import { NextResponse } from "next/server";
+import { supabase } from "@/lib/supabase";
 
-export const dynamic = "force-dynamic";
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
+    // Destructure the payload sent from the frontend
+    const { fullName, age, city, country, discord, email, skills, hoursPerDay, contact, about, roleData, templateId } = body;
 
-  // Check if applications are open
-  const templates = await db.select().from(applicationTemplates).limit(1);
-  if (!templates.length || !templates[0].isOpen) {
-    return NextResponse.json({ error: "Applications are currently closed." }, { status: 403 });
+    const { data, error } = await supabase
+      .from("application_submissions")
+      .insert({
+        template_id: templateId || 1, // Fallback to 1 if not provided
+        full_name: fullName,
+        age: Number(age),
+        city,
+        country,
+        discord,
+        email,
+        skills, // array of strings
+        hours_per_day: hoursPerDay,
+        contact: contact || null,
+        about,
+        role_data: roleData, // JSON object
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true, id: data.id });
+  } catch (error: any) {
+    console.error("Error submitting application:", error);
+    return NextResponse.json({ error: "Failed to submit application" }, { status: 500 });
   }
-
-  const {
-    fullName, age, city, country, discord, email,
-    skills, hoursPerDay, contact, about, roleData
-  } = body;
-
-  if (!fullName || !age || !city || !country || !discord || !email || !about) {
-    return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-  }
-
-  const submission = await db
-    .insert(applicationSubmissions)
-    .values({
-      templateId: templates[0].id,
-      fullName,
-      age: parseInt(age),
-      city,
-      country,
-      discord,
-      email,
-      skills: skills || [],
-      hoursPerDay,
-      contact: contact || null,
-      about,
-      roleData: roleData || {},
-      status: "Pending",
-    })
-    .returning();
-
-  return NextResponse.json({ ok: true, id: submission[0].id });
 }
