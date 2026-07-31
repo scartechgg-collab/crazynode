@@ -109,7 +109,7 @@ interface NavItem {
 }
 
 const panelLinks = [
-  { label: "VPS Panel", detail: "Cloud instances", href: "https://client.crazynode.in", icon: Server },
+  { label: "VPS Panel", detail: "Cloud instances", href: "https://www.crazynode.in", icon: Server },
   { label: "Game Panel", detail: "Server control", href: "https://client.crazynode.in", icon: Gamepad2 },
   { label: "Web Panel", detail: "Sites & domains", href: "https://client.crazynode.in", icon: Globe2 },
 ];

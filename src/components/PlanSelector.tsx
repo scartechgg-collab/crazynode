@@ -8,6 +8,13 @@ import { LOCATIONS, MINECRAFT_PROCESSORS as DEFAULT_PROCESSORS, type Processor, 
 import { minecraftProductUrl } from "@/lib/productUrls";
 import { useCart } from "./CartContext";
 import { useCurrency } from "./CurrencyContext";
+import {
+  Tabs,
+  TabsContent,
+  TabsContents,
+  TabsList,
+  TabsTrigger,
+} from "@/components/animate-ui/components/animate/tabs";
 
 type Category = "AMD" | "INTEL";
 const CATEGORIES: Category[] = ["AMD", "INTEL"];
@@ -134,7 +141,6 @@ export default function PlanSelector({ gameName = "Minecraft", isFirstSection = 
       .catch(() => {});
   }, []);
 
-  const processors = useMemo(() => allProcessors.filter((p: Processor) => p.category === category), [category, allProcessors]);
   const selected = useMemo<Processor | null>(() => allProcessors.find((p: Processor) => p.id === processorId) || null, [processorId, allProcessors]);
   const location = useMemo(() => LOCATIONS.find((l) => l.id === locationId) || LOCATIONS[0], [locationId]);
 
@@ -186,6 +192,7 @@ export default function PlanSelector({ gameName = "Minecraft", isFirstSection = 
           </div>
 
           {/* Step 2: Processor Category */}
+          {/* Applied animate-ui Tabs to handle smooth size increase/decrease */}
           <div className="premium-card p-6">
             <div className="flex items-center gap-3 mb-4">
               <span className="w-9 h-9 rounded-xl bg-brand/[.08] border border-brand/15 flex items-center justify-center"><Cpu className="w-4 h-4 text-brand" /></span>
@@ -194,38 +201,44 @@ export default function PlanSelector({ gameName = "Minecraft", isFirstSection = 
                 <h3 className="text-sm font-bold text-white">Processor Category</h3>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => { setCategory(cat); setProcessorId(null); }}
-                  className={`rounded-xl p-3 border text-sm font-bold transition-all bg-gradient-to-br ${CATEGORY_ACCENT[cat]} ${category === cat ? "border-brand/50 text-white shadow-lg shadow-brand/10" : "border-white/[.07] text-gray-400 hover:text-white"}`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-            <div className="space-y-2">
-              <AnimatePresence mode="wait">
-                <motion.div key={category} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} transition={{ duration: 0.2 }} className="space-y-2">
-                  {processors.map((proc) => (
-                    <button
-                      key={proc.id}
-                      type="button"
-                      onClick={() => setProcessorId(proc.id)}
-                      className={`w-full text-left rounded-xl p-3 border transition-all ${processorId === proc.id ? "bg-brand/[.08] border-brand/40" : "bg-white/[.02] border-white/[.07] hover:bg-white/[.04]"}`}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="text-sm font-semibold text-white">{proc.name}</p>
-                        {proc.badge && <span className="text-[9px] rounded-full bg-brand/10 border border-brand/15 px-2 py-0.5 text-brand font-medium">{proc.badge}</span>}
-                      </div>
-                      <p className="text-[10px] text-gray-500 mt-0.5">{proc.tiers.length} tiers available</p>
-                    </button>
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-            </div>
+            
+            <Tabs value={category} onValueChange={(val) => { setCategory(val as Category); setProcessorId(null); }}>
+              <TabsList className="grid grid-cols-2 gap-2 mb-4 w-full">
+                {CATEGORIES.map((cat) => (
+                  <TabsTrigger 
+                    key={cat} 
+                    value={cat}
+                    className={`w-full rounded-xl p-3 border text-sm font-bold transition-all bg-gradient-to-br ${CATEGORY_ACCENT[cat]} border-white/[.07] text-gray-400 hover:text-white data-[state=active]:border-brand/50 data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-brand/10`}
+                  >
+                    {cat}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              
+              <TabsContents>
+                {CATEGORIES.map((cat) => {
+                  const currentProcessors = allProcessors.filter((p: Processor) => p.category === cat);
+                  return (
+                    <TabsContent key={cat} value={cat} className="space-y-2">
+                      {currentProcessors.map((proc) => (
+                        <button
+                          key={proc.id}
+                          type="button"
+                          onClick={() => setProcessorId(proc.id)}
+                          className={`w-full text-left rounded-xl p-3 border transition-all ${processorId === proc.id ? "bg-brand/[.08] border-brand/40" : "bg-white/[.02] border-white/[.07] hover:bg-white/[.04]"}`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-sm font-semibold text-white">{proc.name}</p>
+                            {proc.badge && <span className="text-[9px] rounded-full bg-brand/10 border border-brand/15 px-2 py-0.5 text-brand font-medium">{proc.badge}</span>}
+                          </div>
+                          <p className="text-[10px] text-gray-500 mt-0.5">{proc.tiers.length} tiers available</p>
+                        </button>
+                      ))}
+                    </TabsContent>
+                  );
+                })}
+              </TabsContents>
+            </Tabs>
           </div>
 
           {/* Step 3: Summary */}
