@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Terminal, FolderOpen, GitBranch, PackageOpen, Network, Users, ShieldCheck, HelpCircle, ChevronRight } from "lucide-react";
 
 const panelScreens = [
-  { id: "console", name: "Console", icon: Terminal, image: "https://i.postimg.cc/85ttT93h/Console.png", desc: "Real-time server logs, live resource monitoring & direct console command execution." },
-  { id: "files", name: "Files", icon: FolderOpen, image: "https://i.postimg.cc/qqqQqQVG/File-M.png", desc: "Clean file manager with drag-and-drop uploads, editor syntax highlighting, and archiver." },
+  { id: "console", name: "Console", icon: Terminal, image: "https://i.ibb.co/vCRt4465/console.png", desc: "Real-time server logs, live resource monitoring & direct console command execution." },
+  { id: "files", name: "Files", icon: FolderOpen, image: "https://i.ibb.co/6RCmy2mL/files.png", desc: "Clean file manager with drag-and-drop uploads, editor syntax highlighting, and archiver." },
   { id: "versions", name: "Version Changer", icon: GitBranch, image: "https://i.postimg.cc/nrrTrTbS/Version-C.png", desc: "Switch between Spigot, Paper, Fabric & Vanilla versions instantly with automated backups." },
   { id: "modpacks", name: "Modpack Installer", icon: PackageOpen, image: "https://i.postimg.cc/KjjQjQSs/Modpack-I.png", desc: "One-click installation for thousands of CurseForge & Modrinth modpacks effortlessly." },
-  { id: "sftp", name: "SFTP", icon: Network, image: "https://i.postimg.cc/WzzSzSLX/SFTP.png", desc: "Ultra-secure file transfer protocol access with password protection & encryption." },
+  { id: "sftp", name: "SFTP", icon: Network, image: "https://i.ibb.co/TqgRVtkB/sftp.png", desc: "Ultra-secure file transfer protocol access with password protection & encryption." },
   { id: "players", name: "Player Manager", icon: Users, image: "https://i.postimg.cc/FR8Gf3r1/Player-M.png", desc: "Comprehensive player lists, permissions configuration, and online tracking." },
 ];
 
